@@ -20,6 +20,25 @@ BAUD_RATE = 1200.0
 
 TWO_PI = 2.0 * math.pi
 
+def encode(binary_data):
+	'''
+	Encode binary data using Bell-202 AFSK
+	
+	Expects a bitarray.bitarray() object of binary data as its argument.
+	Returns a generator of sound samples suitable for use with the 
+	audiogen module.
+	'''
+	framed_data = frame(binary_data)
+
+	# set volume to 1/2, preceed packet with 1/20 s silence to allow for startup glitches
+	for sample in itertools.chain(
+		audiogen.silence(1.05), 
+		multiply(modulate(framed_data), constant(0.5)), 
+		audiogen.silence(1.05), 
+	):
+		yield sample
+
+
 def modulate(data):
 	'''
 	Generate Bell 202 AFSK samples for the given symbol generator
@@ -82,16 +101,4 @@ def frame(stuffed_data):
 			bitarray("01111110") 
 		)
 	)
-
-def encode(binary_data):
-	'''Encode binary data using Bell-202 AFSK'''
-	framed_data = frame(binary_data)
-
-	# set volume to 1/2, preceed packet with 1/20 s silence to allow for startup glitches
-	for sample in itertools.chain(
-		audiogen.silence(1.05), 
-		multiply(modulate(framed_data), constant(0.5)), 
-		audiogen.silence(1.05), 
-	):
-		yield sample
 
