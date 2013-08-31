@@ -27,7 +27,7 @@ setup(
 
 	entry_points={
 		"console_scripts": [
-			"afsk = afsk.afsk:main"
+			"aprs = afsk.ax25:main"
 		]
 	},
 

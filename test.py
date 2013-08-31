@@ -5,7 +5,7 @@ import crc16
 import struct
 
 def test_fcs():
-	fcs = afsk.FCS()
+	fcs = afsk.ax25.FCS()
 	bytes = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	bits = bitarray()
 	bits.frombytes(bytes)
