@@ -4,6 +4,7 @@
 # http://n1vg.net/packet/
 
 import logging
+logger = logging.getLogger(__name__)
 
 import math
 import itertools
@@ -69,7 +70,7 @@ def modulate(data):
 				phase -= TWO_PI
 
 		bits += 1
-		logging.debug("bits = %d, time = %.7f ms, expected time = %.7f ms, error = %.7f ms, baud rate = %.6f Hz" \
+		logger.debug("bits = %d, time = %.7f ms, expected time = %.7f ms, error = %.7f ms, baud rate = %.6f Hz" \
 			% (bits, 1000 * seconds, 1000 * bits / BAUD_RATE, 1000 * (seconds - bits / BAUD_RATE), bits / seconds))
 
 def nrzi(data):

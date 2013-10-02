@@ -1,7 +1,7 @@
 # coding=utf8
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 import struct
 
@@ -20,7 +20,7 @@ def bit_stuff(data):
 		yield bit
 		# todo: do we stuff *after* fifth '1' or *before* sixth '1?'
 		if count == 5:
-			logging.debug("Stuffing bit")
+			logger.debug("Stuffing bit")
 			yield False
 			count = 0
 
@@ -204,13 +204,15 @@ class UI(AX25):
 			
 def main():
 	import sys
+	logging.basicConfig(level=logging.INFO)
+
 	callsign = sys.argv[1] if len(sys.argv) > 1 else "DUMMY"
 	data = sys.argv[2] if len(sys.argv) > 2 else ":Test"
 
 	packet = UI("APRS", callsign, info=data)
 
 	print("Sending packet: '{}'".format(packet))
-	logging.debug(r"Packet bits:\n{!r}".format(packet.unparse()))
+	logger.debug(r"Packet bits:\n{!r}".format(packet.unparse()))
 
 	audiogen.sampler.play(afsk.encode(packet.unparse()), blocking=True)
 
