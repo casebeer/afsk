@@ -7,7 +7,7 @@ import struct
 import sys
 import argparse
 
-from bitarray import bitarray
+import bitstring
 import audiogen
 
 import afsk
@@ -68,13 +68,12 @@ def fcs(bits):
 	# append fcs digest to bit stream
 
 	# n.b. wire format is little-bit-endianness in addition to little-endian
-	digest = bitarray(endian="little")
-	digest.frombytes(fcs.digest())
+	digest = bitstring.BitArray(bytes=fcs.digest())
 	for bit in digest:
 		yield bit
 
 def fcs_validate(bits):
-	buffer = bitarray()
+	buffer = bitstring.BitArray()
 	fcs = FCS()
 
 	for bit in bits:
@@ -146,11 +145,8 @@ class AX25(object):
 			fcs = self.fcs()
 		)
 	def unparse(self):
-		flag = bitarray(endian="little")
-		flag.frombytes(self.flag)
-
-		bits = bitarray(endian="little")
-		bits.frombytes("".join([self.header(), self.info, self.fcs()]))
+		flag = bitstring.BitArray(bytes=self.flag)
+		bits = bitstring.BitArray(bytes=b"".join([self.header(), self.info, self.fcs()]))
 
 		return flag + bit_stuff(bits) + flag
 	
@@ -176,8 +172,7 @@ class AX25(object):
 		)
 	
 	def fcs(self):
-		content = bitarray(endian="little")
-		content.frombytes("".join([self.header(), self.info]))
+		content = bitstring.BitArray(bytes="".join([self.header(), self.info]))
 
 		fcs = FCS()
 		for bit in content:

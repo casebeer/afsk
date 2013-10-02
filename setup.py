@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 required_modules = [
 	'argparse',
 	'audiogen',
-	'bitarray',
+	'bitstring',
 	]
 extras_require = {
 	'soundcard_output': ['PyAudio'],

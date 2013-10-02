@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 import math
 import itertools
 
-from bitarray import bitarray
+import bitstring
 
 import audiogen
 from audiogen.util import multiply
@@ -25,7 +25,7 @@ def encode(binary_data):
 	'''
 	Encode binary data using Bell-202 AFSK
 	
-	Expects a bitarray.bitarray() object of binary data as its argument.
+	Expects a bitstring.Bits object of binary data as its argument.
 	Returns a generator of sound samples suitable for use with the 
 	audiogen module.
 	'''
@@ -96,10 +96,10 @@ def frame(stuffed_data):
 	'''
 	return nrzi(
 		itertools.chain(
-			bitarray("00000000") * 20,
-			bitarray("01111110") * 100, 
+			bitstring.Bits(bin="00000000") * 20,
+			bitstring.Bits(bin="01111110") * 100, 
 			stuffed_data,
-			bitarray("01111110") 
+			bitstring.Bits(bin="01111110") 
 		)
 	)
 
