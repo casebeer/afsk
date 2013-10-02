@@ -76,6 +76,7 @@ def fcs_validate(bits):
 	buffer = bitstring.BitArray()
 	fcs = FCS()
 
+	# todo: fix buffer.append(), which takes a BitArray not a boolean
 	for bit in bits:
 		buffer.append(bit)
 		if len(buffer) > 16:
@@ -147,6 +148,11 @@ class AX25(object):
 	def unparse(self):
 		flag = bitstring.BitArray(bytes=self.flag)
 		bits = bitstring.BitArray(bytes=b"".join([self.header(), self.info, self.fcs()]))
+		flag = bitstring.BitArray(bytes=self.flag)
+		bits = bitstring.BitArray(bytes=b"".join([self.header(), self.info, self.fcs()]))
+
+		print (bitstring.BitArray(bin="") + bits).bin
+		#print "".join(["1" if bit else "0" for bit in bit_stuff(bits)])
 
 		return flag + bit_stuff(bits) + flag
 	
