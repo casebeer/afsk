@@ -4,6 +4,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 import struct
+import sys
+import argparse
 
 from bitarray import bitarray
 import audiogen
@@ -202,24 +204,44 @@ class UI(AX25):
 		self.control_field = b"\x03"
 		self.protocol_id = b"\xf0"
 			
-def main():
-	import sys
+def main(args=None):
 	logging.basicConfig(level=logging.INFO)
 
-	callsign = sys.argv[1] if len(sys.argv) > 1 else "DUMMY"
-	data = sys.argv[2] if len(sys.argv) > 2 else ":Test"
+	parser = argparse.ArgumentParser(description='')
+	parser.add_argument(
+		'-c',
+		'--callsign', 
+		default='DUMMY',
+		help=''
+	)
+	parser.add_argument(
+		'-i',
+		'--info', 
+		default=':Test',
+		help=''
+	)
+	parser.add_argument(
+		'-o',
+		'--output', 
+		default=None,
+		help='Write audio to wav file. Use \'-\' for stdout.'
+	)
+	args = parser.parse_args(args=args)
 
-	packet = UI("APRS", callsign, info=data)
+	packet = UI("APRS", args.callsign, info=args.info)
 
 	print("Sending packet: '{}'".format(packet))
 	logger.debug(r"Packet bits:\n{!r}".format(packet.unparse()))
 
-	audiogen.sampler.play(afsk.encode(packet.unparse()), blocking=True)
+	audio = afsk.encode(packet.unparse())
 
-	## file output
-	#with open("test.wav", "wb") as f:
-	#	audiogen.write_wav(f, afsk(packet.unparse()))
-	#audiogen.util.play("test.wav")
+	if args.output == '-':
+		audiogen.sampler.write_wav(sys.stdout, audio)
+	elif args.output is not None:
+		with open(args.output, 'wb') as f:
+			audiogen.sampler.write_wav(f, audio)
+	else:
+		audiogen.sampler.play(audio, blocking=True)
 
 if __name__ == "__main__":
 	main()
