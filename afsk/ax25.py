@@ -211,14 +211,24 @@ def main(args=None):
 	parser.add_argument(
 		'-c',
 		'--callsign', 
-		default='DUMMY',
-		help=''
+		required=True,
+		help='Your ham callsign. REQUIRED.'
 	)
 	parser.add_argument(
-		'-i',
-		'--info', 
-		default=':Test',
-		help=''
+		'info', 
+		metavar='INFO',
+		help='APRS message body'
+	)
+	parser.add_argument(
+		'--destination',
+		default=b'APRS',
+		help='AX.25 destination address. See http://www.aprs.org/aprs11/tocalls.txt'
+	)
+	parser.add_argument(
+		'-d',
+		'--digipeaters',
+		default=b'WIDE1-1,WIDE2-1',
+		help='Comma separated list of digipeaters to address.'
 	)
 	parser.add_argument(
 		'-o',
@@ -228,7 +238,12 @@ def main(args=None):
 	)
 	args = parser.parse_args(args=args)
 
-	packet = UI("APRS", args.callsign, info=args.info)
+	packet = UI(
+		destination=args.destination,
+		source=args.callsign, 
+		info=args.info,
+		digipeaters=args.digipeaters.split(b','),
+	)
 
 	print("Sending packet: '{0}'".format(packet))
 	logger.debug(r"Packet bits:\n{0!r}".format(packet.unparse()))
