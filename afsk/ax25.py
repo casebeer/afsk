@@ -69,6 +69,8 @@ def fcs(bits):
 
 	# n.b. wire format is little-bit-endianness in addition to little-endian
 	digest = bitstring.BitArray(bytes=fcs.digest())
+	digest.reverse()
+	digest.byteswap()
 	for bit in digest:
 		yield bit
 
@@ -77,6 +79,7 @@ def fcs_validate(bits):
 	fcs = FCS()
 
 	# todo: fix buffer.append(), which takes a BitArray not a boolean
+	# todo: fix endian
 	for bit in bits:
 		buffer.append(bit)
 		if len(buffer) > 16:
@@ -147,12 +150,12 @@ class AX25(object):
 		)
 	def unparse(self):
 		flag = bitstring.BitArray(bytes=self.flag)
-		bits = bitstring.BitArray(bytes=b"".join([self.header(), self.info, self.fcs()]))
-		flag = bitstring.BitArray(bytes=self.flag)
-		bits = bitstring.BitArray(bytes=b"".join([self.header(), self.info, self.fcs()]))
+		flag.reverse() 
+		flag.byteswap() 
 
-		print (bitstring.BitArray(bin="") + bits).bin
-		#print "".join(["1" if bit else "0" for bit in bit_stuff(bits)])
+		bits = bitstring.BitArray(bytes=b"".join([self.header(), self.info, self.fcs()]))
+		bits.reverse() 
+		bits.byteswap() 
 
 		return flag + bit_stuff(bits) + flag
 	
@@ -179,6 +182,8 @@ class AX25(object):
 	
 	def fcs(self):
 		content = bitstring.BitArray(bytes="".join([self.header(), self.info]))
+		content.reverse()
+		content.byteswap()
 
 		fcs = FCS()
 		for bit in content:
