@@ -8,7 +8,7 @@ import struct
 from bitarray import bitarray
 import audiogen
 
-from . import afsk
+import afsk
 
 def bit_stuff(data):
 	count = 0

@@ -1,4 +1,4 @@
 
-from .afsk import encode
-from . import ax25
+from afsk import encode
+import ax25
 
