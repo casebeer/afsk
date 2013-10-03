@@ -7,6 +7,9 @@ required_modules = [
 	'audiogen',
 	'bitarray',
 	]
+extras_require = {
+	'soundcard_output': ['PyAudio'],
+}
 
 with open("README.rst", "rb") as f:
 	readme = f.read()
@@ -21,6 +24,7 @@ setup(
 
 	packages=find_packages(exclude='tests'),
 	install_requires=required_modules,
+	extras_require=extras_require,
 
 	tests_require=["nose", "crc16"],
 	test_suite="nose.collector",
