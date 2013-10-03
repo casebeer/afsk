@@ -1,3 +1,4 @@
+argparse
 bitarray
 PyAudio==0.2.7
 -e git+https://github.com/casebeer/audiogen.git#egg=audiogen-dev

@@ -230,8 +230,8 @@ def main(args=None):
 
 	packet = UI("APRS", args.callsign, info=args.info)
 
-	print("Sending packet: '{}'".format(packet))
-	logger.debug(r"Packet bits:\n{!r}".format(packet.unparse()))
+	print("Sending packet: '{0}'".format(packet))
+	logger.debug(r"Packet bits:\n{0!r}".format(packet.unparse()))
 
 	audio = afsk.encode(packet.unparse())
 
