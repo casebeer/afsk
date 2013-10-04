@@ -204,9 +204,7 @@ class UI(AX25):
 		self.control_field = b"\x03"
 		self.protocol_id = b"\xf0"
 			
-def main(args=None):
-	logging.basicConfig(level=logging.INFO)
-
+def main(arguments=None):
 	parser = argparse.ArgumentParser(description='')
 	parser.add_argument(
 		'-c',
@@ -236,7 +234,18 @@ def main(args=None):
 		default=None,
 		help='Write audio to wav file. Use \'-\' for stdout.'
 	)
-	args = parser.parse_args(args=args)
+	parser.add_argument(
+		'-v',
+		'--verbose',
+		action='count',
+		help='Print more debugging output.'
+	)
+	args = parser.parse_args(args=arguments)
+
+	if args.verbose == 0:
+		logging.basicConfig(level=logging.INFO)
+	elif args.verbose >=1:
+		logging.basicConfig(level=logging.DEBUG)
 
 	packet = UI(
 		destination=args.destination,
