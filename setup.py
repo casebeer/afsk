@@ -13,15 +13,15 @@ extras_require = {
 }
 
 with open("README.rst", "rb") as f:
-	readme = f.read()
+	readme = f.read().decode('utf8')
 
 setup(
 	name="afsk",
-	version="0.0.1",
-	description="AFSK – Bell 202 Audio Frequency Shift Keying encoder",
+	version="0.0.2",
+	description=u"Bell 202 Audio Frequency Shift Keying encoder and APRS packet audio tools",
 	author="Christopher H. Casebeer",
 	author_email="",
-	url="",
+	url="https://github.com/casebeer/afsk",
 
 	packages=find_packages(exclude='tests'),
 	install_requires=required_modules,
@@ -40,7 +40,10 @@ setup(
 	classifiers=[
 		"Environment :: Console",
 		"License :: OSI Approved :: BSD License",
+		"Programming Language :: Python :: 2.6",
+		"Programming Language :: Python :: 2.7",
 		"Intended Audience :: Developers",
+		"Intended Audience :: End Users/Desktop",
 		"Topic :: Multimedia :: Sound/Audio",
 		"Topic :: Communications :: Ham Radio",
 	]
