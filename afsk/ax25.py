@@ -254,7 +254,7 @@ def main(arguments=None):
 		digipeaters=args.digipeaters.split(b','),
 	)
 
-	print("Sending packet: '{0}'".format(packet))
+	logger.info(r"Sending packet: '{0}'".format(packet))
 	logger.debug(r"Packet bits:\n{0!r}".format(packet.unparse()))
 
 	audio = afsk.encode(packet.unparse())
