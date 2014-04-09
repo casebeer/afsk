@@ -1,4 +1,4 @@
-argparse
-bitarray
+argparse==1.1
+bitarray==0.8.1
 PyAudio==0.2.7
-audiogen
+audiogen==0.0.2
