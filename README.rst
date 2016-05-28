@@ -73,6 +73,13 @@ Save to a wave file with using short options::
 
     $ aprs -c <your callsign> -o packet.wav ":EMAIL    :test@example.com Test email"
 
+Contributing
+------------
+
+Get the source and report any bugs on Github:
+
+    https://github.com/casebeer/afsk
+
 Version History
 ---------------
 
