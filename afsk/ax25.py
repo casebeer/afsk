@@ -47,7 +47,7 @@ class FCS(object):
 #		print "%r" % "".join([chr((~self.fcs & 0xff) % 256), chr((~self.fcs >> 8) % 256)])
 		# digest is two bytes, little endian
 		return struct.pack("<H", ~self.fcs % 2**16)
-		
+
 def fcs(bits):
 	'''
 	Append running bitwise FCS CRC checksum to end of generator
@@ -83,16 +83,16 @@ def fcs_validate(bits):
 			bit = buffer.pop(0)
 			fcs.update(bit)
 			yield bit
-	
+
 	if buffer.tobytes() != fcs.digest():
 		raise Exception("FCS checksum invalid.")
 
 class AX25(object):
 	def __init__(
 		self,
-		destination=b"APRS", 
-		source=b"", 
-		digipeaters=(b"RELAY", b"WIDE2-1"), 
+		destination=b"APRS",
+		source=b"",
+		digipeaters=(b"RELAY", b"WIDE2-1"),
 		info=b"\""
 	):
 		self.flag = b"\x7e"
@@ -102,7 +102,7 @@ class AX25(object):
 		self.digipeaters = digipeaters
 
 		self.info = info
-	
+
 	@classmethod
 	def callsign_encode(self, callsign):
 		callsign = callsign.upper()
@@ -110,6 +110,9 @@ class AX25(object):
 			callsign, ssid = callsign.split(b"-")
 		else:
 			ssid = b"0"
+
+		if 10 <= int(ssid) <= 15:
+			ssid = chr(ord(ssid[1])+10)
 
 		assert(len(ssid) == 1)
 		assert(len(callsign) <= 6)
@@ -153,7 +156,7 @@ class AX25(object):
 		bits.frombytes("".join([self.header(), self.info, self.fcs()]))
 
 		return flag + bit_stuff(bits) + flag
-	
+
 	def __repr__(self):
 		return self.__str__()
 	def __str__(self):
@@ -174,7 +177,7 @@ class AX25(object):
 			digipeaters=None,
 			info=None
 		)
-	
+
 	def fcs(self):
 		content = bitarray(endian="little")
 		content.frombytes("".join([self.header(), self.info]))
@@ -189,31 +192,31 @@ class AX25(object):
 class UI(AX25):
 	def __init__(
 		self,
-		destination=b"APRS", 
-		source=b"", 
+		destination=b"APRS",
+		source=b"",
 		digipeaters=(b"WIDE1-1", b"WIDE2-1"),
 		info=b""
 	):
 		AX25.__init__(
-			self, 
-			destination, 
-			source, 
+			self,
+			destination,
+			source,
 			digipeaters,
 			info
 		)
 		self.control_field = b"\x03"
 		self.protocol_id = b"\xf0"
-			
+
 def main(arguments=None):
 	parser = argparse.ArgumentParser(description='')
 	parser.add_argument(
 		'-c',
-		'--callsign', 
+		'--callsign',
 		required=True,
 		help='Your ham callsign. REQUIRED.'
 	)
 	parser.add_argument(
-		'info', 
+		'info',
 		metavar='INFO',
 		help='APRS message body'
 	)
@@ -231,7 +234,7 @@ def main(arguments=None):
 	)
 	parser.add_argument(
 		'-o',
-		'--output', 
+		'--output',
 		default=None,
 		help='Write audio to wav file. Use \'-\' for stdout.'
 	)
@@ -250,7 +253,7 @@ def main(arguments=None):
 
 	packet = UI(
 		destination=args.destination,
-		source=args.callsign, 
+		source=args.callsign,
 		info=args.info,
 		digipeaters=args.digipeaters.split(b','),
 	)
