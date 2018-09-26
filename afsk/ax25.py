@@ -225,8 +225,9 @@ def main(arguments=None):
 	parser.add_argument(
 		'-d',
 		'--digipeaters',
+		'--path',
 		default=b'WIDE1-1,WIDE2-1',
-		help='Comma separated list of digipeaters to address.'
+		help='Digipeater path to use. "New Paradigm" recommendations are "WIDE1-1,WIDE2-1" for mobile and "WIDE2-1" for fixed stations. Defaults to "WIDE1-1,WIDE2-1."'
 	)
 	parser.add_argument(
 		'-o',
