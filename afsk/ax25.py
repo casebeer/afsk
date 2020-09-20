@@ -111,6 +111,9 @@ class AX25(object):
 		else:
 			ssid = b"0"
 
+		if 10 <= int(ssid) <= 15:
+			ssid = chr(ord(ssid[1])+10)
+
 		assert(len(ssid) == 1)
 		assert(len(callsign) <= 6)
 
