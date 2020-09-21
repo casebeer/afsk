@@ -1,5 +1,3 @@
-# coding=utf-8
-
 # Bell 202 Audio Frequency Shift Keying
 # http://n1vg.net/packet/
 
@@ -30,7 +28,7 @@ def encode(binary_data):
 	audiogen module.
 	'''
 	framed_data = frame(binary_data)
-
+	
 	# set volume to 1/2, preceed packet with 1/20 s silence to allow for startup glitches
 	for sample in itertools.chain(
 		audiogen.silence(1.05), 

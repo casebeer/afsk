@@ -88,46 +88,31 @@ def fcs_validate(bits):
 		raise Exception("FCS checksum invalid.")
 
 class AX25(object):
-	def __init__(
-		self,
-		destination=b"APRS", 
-		source=b"", 
-		digipeaters=(b"RELAY", b"WIDE2-1"), 
-		info=b"\""
-	):
+	def __init__(self, destination="APRS", source="", digipeaters=("RELAY", "WIDE2-1"), info="\"" ):
 		self.flag = b"\x7e"
-
 		self.destination = destination
 		self.source = source
 		self.digipeaters = digipeaters
-
 		self.info = info
 	
 	@classmethod
 	def callsign_encode(self, callsign):
 		callsign = callsign.upper()
-		if callsign.find(b"-") > 0:
-			callsign, ssid = callsign.split(b"-")
+		if callsign.find("-") > 0:
+			callsign, ssid = callsign.split("-")
 		else:
-			ssid = b"0"
-
-		if 10 <= int(ssid) <= 15:
-			ssid = chr(ord(ssid[1])+10)
+			ssid = "0"
 
 		assert(len(ssid) == 1)
 		assert(len(callsign) <= 6)
 
-		callsign = b"{callsign:6s}{ssid}".format(callsign=callsign, ssid=ssid)
-
+		callsign = "{callsign:6s}{ssid}".format(callsign=callsign, ssid=ssid)
 		# now shift left one bit, argh
-		return b"".join([chr(ord(char) << 1) for char in callsign])
+		return b"".join([bytes([char << 1]) for char in callsign.encode('utf-8')])
 
 	def encoded_addresses(self):
-		address_bytes = bytearray(b"{destination}{source}{digis}".format(
-			destination = AX25.callsign_encode(self.destination),
-			source = AX25.callsign_encode(self.source),
-			digis = b"".join([AX25.callsign_encode(digi) for digi in self.digipeaters])
-		))
+		address = b"".join([AX25.callsign_encode(self.destination),AX25.callsign_encode(self.source), b"".join([AX25.callsign_encode(digi) for digi in self.digipeaters])])
+		address_bytes = bytearray(address)
 
 		# set the low order (first, with eventual little bit endian encoding) bit
 		# in order to flag the end of the address string
@@ -136,36 +121,30 @@ class AX25(object):
 		return address_bytes
 
 	def header(self):
-		return b"{addresses}{control}{protocol}".format(
-			addresses = self.encoded_addresses(),
-			control = self.control_field, # * 8,
-			protocol = self.protocol_id,
-		)
+		return b"".join([self.encoded_addresses(), self.control_field, self.protocol_id])		
+
 	def packet(self):
-		return b"{header}{info}{fcs}".format(
-			flag = self.flag,
-			header = self.header(),
-			info = self.info,
-			fcs = self.fcs()
-		)
+		return b"".join([self.flag,self.header(),self.info.encode('utf-8'),self.fcs()])
+
 	def unparse(self):
 		flag = bitarray(endian="little")
 		flag.frombytes(self.flag)
 
 		bits = bitarray(endian="little")
-		bits.frombytes("".join([self.header(), self.info, self.fcs()]))
-
+		bits.frombytes(b"".join([self.header(), self.info.encode('utf-8'), self.fcs()]))
 		return flag + bit_stuff(bits) + flag
 	
 	def __repr__(self):
 		return self.__str__()
+
 	def __str__(self):
-		return b"{source}>{destination},{digis}:{info}".format(
+		__str__ = "{source}>{destination},{digis}:{info}".format(
 			destination = self.destination,
 			source = self.source,
-			digis = b",".join(self.digipeaters),
+			digis = ",".join(self.digipeaters),
 			info = self.info
 		)
+		return __str__
 
 	@classmethod
 	def parse(cls, bits):
@@ -180,7 +159,7 @@ class AX25(object):
 	
 	def fcs(self):
 		content = bitarray(endian="little")
-		content.frombytes("".join([self.header(), self.info]))
+		content.frombytes(b"".join([self.header(), self.info.encode('utf-8')]))
 
 		fcs = FCS()
 		for bit in content:
@@ -190,20 +169,8 @@ class AX25(object):
 		return fcs.digest()
 
 class UI(AX25):
-	def __init__(
-		self,
-		destination=b"APRS", 
-		source=b"", 
-		digipeaters=(b"WIDE1-1", b"WIDE2-1"),
-		info=b""
-	):
-		AX25.__init__(
-			self, 
-			destination, 
-			source, 
-			digipeaters,
-			info
-		)
+	def __init__(self, destination="APRS", source="", digipeaters=("WIDE1-1", "WIDE2-1"), info=""):
+		AX25.__init__(self, destination, source, digipeaters, info)
 		self.control_field = b"\x03"
 		self.protocol_id = b"\xf0"
 			
@@ -222,7 +189,7 @@ def main(arguments=None):
 	)
 	parser.add_argument(
 		'--destination',
-		default=b'APRS',
+		default='APRS',
 		help='AX.25 destination address. See http://www.aprs.org/aprs11/tocalls.txt'
 	)
 	parser.add_argument(

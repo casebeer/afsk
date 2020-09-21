@@ -1,4 +1,1 @@
-
-from afsk import encode
-import ax25
-
+from .ax25 import FCS
