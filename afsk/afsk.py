@@ -51,7 +51,7 @@ def modulate(data):
 	clock = (x / BAUD_RATE for x in itertools.count(1))
 	tones = (MARK_HZ if bit else SPACE_HZ for bit in data)
 
-	for boundary, frequency in itertools.izip(clock, tones):
+	for boundary, frequency in izip(clock, tones):
 		# frequency of current symbol is determined by how much 
 		# we advance the signal's phase in each audio frame
 		phase_change_per_sample = TWO_PI / (audiogen.sampler.FRAME_RATE / frequency)
