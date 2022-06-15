@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 required_modules = [
 	'argparse',
-	'audiogen',
+	'audiogen_p3',
 	'bitarray',
 	]
 extras_require = {
@@ -17,7 +17,7 @@ with open("README.rst", "rb") as f:
 
 setup(
 	name="afsk",
-	version="0.0.3",
+	version="0.0.4",
 	description=u"Bell 202 Audio Frequency Shift Keying encoder and APRS packet audio tools",
 	author="Christopher H. Casebeer",
 	author_email="",
@@ -40,8 +40,8 @@ setup(
 	classifiers=[
 		"Environment :: Console",
 		"License :: OSI Approved :: BSD License",
-		"Programming Language :: Python :: 2.6",
-		"Programming Language :: Python :: 2.7",
+		"Programming Language :: Python :: 3.9",
+		"Programming Language :: Python :: 3.8",
 		"Intended Audience :: Developers",
 		"Intended Audience :: End Users/Desktop",
 		"Topic :: Multimedia :: Sound/Audio",

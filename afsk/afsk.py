@@ -9,9 +9,9 @@ import itertools
 
 from bitarray import bitarray
 
-import audiogen
-from audiogen.util import multiply
-from audiogen.util import constant
+import audiogen_p3 as audiogen
+from audiogen_p3.util import multiply
+from audiogen_p3.util import constant
 
 MARK_HZ = 1200.0
 SPACE_HZ = 2200.0

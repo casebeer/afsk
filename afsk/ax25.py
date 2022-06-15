@@ -8,9 +8,9 @@ import sys
 import argparse
 
 from bitarray import bitarray
-import audiogen
+import audiogen_p3 as audiogen
 
-import afsk
+from . import afsk
 
 def bit_stuff(data):
 	count = 0
@@ -196,7 +196,7 @@ def main(arguments=None):
 		'-d',
 		'--digipeaters',
 		'--path',
-		default=b'WIDE1-1,WIDE2-1',
+		default='WIDE1-1,WIDE2-1',
 		help='Digipeater path to use. "New Paradigm" recommendations are "WIDE1-1,WIDE2-1" for mobile and "WIDE2-1" for fixed stations. Defaults to "WIDE1-1,WIDE2-1."'
 	)
 	parser.add_argument(
@@ -215,14 +215,14 @@ def main(arguments=None):
 
 	if args.verbose == 0:
 		logging.basicConfig(level=logging.INFO)
-	elif args.verbose >=1:
+	else:
 		logging.basicConfig(level=logging.DEBUG)
 
 	packet = UI(
 		destination=args.destination,
 		source=args.callsign, 
 		info=args.info,
-		digipeaters=args.digipeaters.split(b','),
+		digipeaters=args.digipeaters.split(','),
 	)
 
 	logger.info(r"Sending packet: '{0}'".format(packet))
