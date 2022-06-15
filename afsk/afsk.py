@@ -1,5 +1,3 @@
-# coding=utf-8
-
 # Bell 202 Audio Frequency Shift Keying
 # http://n1vg.net/packet/
 
@@ -11,9 +9,9 @@ import itertools
 
 from bitarray import bitarray
 
-import audiogen
-from audiogen.util import multiply
-from audiogen.util import constant
+import audiogen_p3 as audiogen
+from audiogen_p3.util import multiply
+from audiogen_p3.util import constant
 
 MARK_HZ = 1200.0
 SPACE_HZ = 2200.0
@@ -30,7 +28,7 @@ def encode(binary_data):
 	audiogen module.
 	'''
 	framed_data = frame(binary_data)
-
+	
 	# set volume to 1/2, preceed packet with 1/20 s silence to allow for startup glitches
 	for sample in itertools.chain(
 		audiogen.silence(1.05), 
@@ -53,7 +51,7 @@ def modulate(data):
 	clock = (x / BAUD_RATE for x in itertools.count(1))
 	tones = (MARK_HZ if bit else SPACE_HZ for bit in data)
 
-	for boundary, frequency in itertools.izip(clock, tones):
+	for boundary, frequency in izip(clock, tones):
 		# frequency of current symbol is determined by how much 
 		# we advance the signal's phase in each audio frame
 		phase_change_per_sample = TWO_PI / (audiogen.sampler.FRAME_RATE / frequency)
